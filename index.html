@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vapor interop defineModel reset repro</title>
+  </head>
+  <body>
+    <h1>Vue 3.6: a Vapor child's uncontrolled <code>defineModel</code> resets when its VDOM parent re-renders</h1>
+    <p>
+      Same <code>Parent.vue</code>/<code>Child.vue</code> source (<code>src/plain/</code> has no
+      <code>vapor</code> attribute, <code>src/vapor/</code> is byte-for-byte identical except for it),
+      mounted three ways, plus a fourth using a hand-written child. In each column click <strong>1</strong>, then <strong>2</strong>.
+      Expected everywhere: the child's text stays <code>"set by child"</code>.
+    </p>
+    <div class="columns">
+      <section>
+        <h2>1. VDOM only</h2>
+        <p><code>createApp(PlainParent)</code></p>
+        <div id="vdom-only"></div>
+      </section>
+      <section>
+        <h2>2. Vapor only</h2>
+        <p><code>createVaporApp(VaporParent)</code></p>
+        <div id="vapor-only"></div>
+      </section>
+      <section>
+        <h2>3. Interop (the bug)</h2>
+        <p>
+          <code>createApp(InteropParent).use(vaporInteropPlugin)</code>: a plain VDOM parent
+          rendering the Vapor-compiled <code>Child</code>.
+        </p>
+        <div id="interop"></div>
+      </section>
+      <section>
+        <h2>4. Interop, hand-written child</h2>
+        <p>
+          Same as 3, but <code>Child</code> is written by hand with
+          <code>defineVaporComponent(...)</code> (<code>src/HandChild.ts</code>), no SFC compiler.
+        </p>
+        <div id="interop-hand"></div>
+      </section>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
